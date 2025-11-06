@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AUTOVAC Control Panel</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== SLIDESHOW INTRO OVERLAY ========== -->
+  <div id="intro-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:99999;background:#000;">
+    
+    <!-- Your slideshow embedded -->
+    <iframe 
+      id="animation-frame" 
+      src="https://six-slide-sparkle.lovable.app/" 
+      style="width:100%;height:100%;border:none;"
+      allow="autoplay">
+    </iframe>
+    
+    <!-- Skip button -->
+    <button 
+      id="skip-intro-btn"
+      onclick="hideIntro()" 
+      style="position:fixed;top:20px;right:20px;padding:12px 24px;background:rgba(255,255,255,0.3);color:white;border:2px solid rgba(255,255,255,0.5);border-radius:8px;cursor:pointer;z-index:100000;font-size:16px;font-weight:600;backdrop-filter:blur(10px);transition:all 0.3s ease;">
+      Skip Intro →
+    </button>
+
+  </div>
+
+  <script>
+    function hideIntro() {
+      const overlay = document.getElementById('intro-overlay');
+      overlay.style.opacity = '0';
+      overlay.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 500);
+    }
+
+    // Auto-hide after ONE complete slideshow cycle (18 seconds = 6 slides × 3 seconds each)
+    setTimeout(() => {
+      hideIntro();
+    }, 18000);
+
+    // Skip button hover effect
+    const skipBtn = document.getElementById('skip-intro-btn');
+    skipBtn.addEventListener('mouseenter', () => {
+      skipBtn.style.background = 'rgba(255,255,255,0.5)';
+    });
+    skipBtn.addEventListener('mouseleave', () => {
+      skipBtn.style.background = 'rgba(255,255,255,0.3)';
+    });
+  </script>
+  <!-- ========== END OF INTRO ========== -->
+
+  <div class="wrap">
+    <header class="topbar">
+      <div class="logo">AV</div>
+      <div class="title">
+        <h1>AUTOVAC</h1>
+        <p>Smart Vacuum Control System</p>
+      </div>
+      <div class="endpoint">API: <span id="apiHost">http://localhost:8080</span></div>
+    </header>
+
+    <main class="layout">
+      <!-- Main dashboard -->
+      <section class="card main-card">
+        <div class="card-header">
+          <h2>Status</h2>
+          <div class="badge">Live</div>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-item">
+            <label>Device</label>
+            <div id="device-name">-</div>
+          </div>
+          <div class="status-item">
+            <label>Status</label>
+            <div id="device-status">-</div>
+          </div>
+          <div class="status-item">
+            <label>Bluetooth</label>
+            <div id="device-bluetooth">-</div>
+          </div>
+        </div>
+
+        <div class="battery-section">
+          <div class="battery-row">
+            <div class="muted">Battery</div>
+            <div id="batteryPercentText" class="battery-text">-</div>
+          </div>
+          <div class="battery-bar" aria-hidden>
+            <div id="batteryFill" class="battery-fill" style="width: 10%"></div>
+          </div>
+        </div>
+
+        <div class="controls-block">
+          <h3>Controls</h3>
+          <div class="controls">
+            <button id="btnStart" class="btn btn-start">▶ Start</button>
+            <button id="btnPause" class="btn btn-pause">⏸ Pause</button>
+            <button id="btnStop" class="btn btn-stop">⏹ Stop</button>
+            <button id="btnDock" class="btn btn-dock">⤓ Dock</button>
+            <button id="btnLocate" class="btn btn-locate">🔔 Locate</button>
+          </div>
+        </div>
+
+        <div class="activity-block">
+          <h3>Activity Log</h3>
+          <div id="activityList" class="activity-list">
+            <div class="act empty">No activities yet.</div>
+          </div>
+        </div>
+
+        <div class="assistant-block">
+          <h3>Voice Assistant (Mock)</h3>
+          <div class="assistant-row">
+            <input id="assistantInput" type="text" placeholder="Type a command — e.g., 'start cleaning'" />
+            <button id="assistantSend" class="btn btn-send">Send</button>
+          </div>
+          <div id="assistantResponse" class="assistant-response">Awaiting command...</div>
+        </div>
+      </section>
+
+      <!-- Sidebar -->
+      <aside class="card side-card">
+        <div class="side-top">
+          <h3 id="sidebarName">Mocky 3000</h3>
+          <div class="muted">Model: AUTOVAC Mock</div>
+        </div>
+
+        <div class="side-section">
+          <div class="muted">Battery</div>
+          <div class="small-battery">
+            <div class="battery-bar small" aria-hidden>
+              <div id="sidebarBattery" class="battery-fill" style="width:60%"></div>
+            </div>
+            <div id="sidebarBatteryText" class="battery-small-text">60%</div>
+          </div>
+        </div>
+
+        <div class="side-section">
+          <div class="muted">Quick Commands</div>
+          <div id="quickCmds" class="quick-cmds">
+            <button class="cmd" data-cmd="start">start</button>
+            <button class="cmd" data-cmd="pause">pause</button>
+            <button class="cmd" data-cmd="stop">stop</button>
+            <button class="cmd" data-cmd="return">return</button>
+            <button class="cmd" data-cmd="locate">locate</button>
+          </div>
+        </div>
+
+        <div class="side-section">
+          <div class="muted">Last sync</div>
+          <div id="lastSync" class="muted">—</div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      © AUTOVAC — Smart Vacuum Control Panel
+    </footer>
+  </div>
+
+  <!-- JS -->
+  <script src="script.js" defer></script>
+</body>
+</html>
